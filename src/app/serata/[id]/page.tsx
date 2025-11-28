@@ -9,6 +9,7 @@ const supabase = createClient(
 );
 
 export default function SerataPage({ params }: { params: Promise<{ id: string }> }) {
+  const [id, setId] = useState<string>('');
   const [batifondo, setBatifondo] = useState<any>(null);
   const [capoA, setCapoA] = useState('');
   const [capoB, setCapoB] = useState('');
@@ -19,8 +20,15 @@ export default function SerataPage({ params }: { params: Promise<{ id: string }>
   const [totaleB, setTotaleB] = useState(0);
   const [serataFinita, setSerataFinita] = useState(false);
 
+  // Risolve il Promise di Next.js 15
   useEffect(() => {
-    const { id } = await params;
+    params.then((p) => setId(p.id));
+  }, [params]);
+
+  // Tutto il resto solo quando abbiamo l'id
+  useEffect(() => {
+    if (!id) return;
+
     const fetchData = async () => {
       const { data: serata } = await supabase
         .from('serate')
@@ -54,7 +62,7 @@ export default function SerataPage({ params }: { params: Promise<{ id: string }>
     fetchData();
 
     const channel = supabase
-      .channel('batifondi-channel')
+      .channel('batifondi')
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'batifondi', filter: `serata_id=eq.${id}` },
@@ -85,7 +93,7 @@ export default function SerataPage({ params }: { params: Promise<{ id: string }>
 
       await supabase
         .from('batifondi')
-        .insert({ serata_id: params.id, numero: num + 1 });
+        .insert({ serata_id: id, numero: num + 1 });
     } else {
       await supabase
         .from('batifondi')
@@ -106,11 +114,11 @@ export default function SerataPage({ params }: { params: Promise<{ id: string }>
 
         <div className="grid grid-cols-2 gap-6 text-center mb-10">
           <div className="bg-green-800/50 rounded-xl p-6 border-4 border-green-500">
-            <h2 className="text-3xl font-bold text-green-300">{capoA}</h2>
+            <h2 className="text-3xl font-bold text-green-300">{capoA || '...'}</h2>
             <p className="text-6xl font-bold mt-2">{vinteA}</p>
           </div>
           <div className="bg-red-800/50 rounded-xl p-6 border-4 border-red-500">
-            <h2 className="text-3xl font-bold text-red-300">{capoB}</h2>
+            <h2 className="text-3xl font-bold text-red-300">{capoB || '...'}</h2>
             <p className="text-6xl font-bold mt-2">{vinteB}</p>
           </div>
         </div>
