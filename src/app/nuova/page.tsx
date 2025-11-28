@@ -43,6 +43,7 @@ export default function NuovaSerata() {
 
     const id = data.id; // Usa l’intero UUID
     const url = `${window.location.origin}/serata/${id}`;
+    setLink(url);
   };
 
   return (
