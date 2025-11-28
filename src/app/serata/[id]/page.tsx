@@ -8,14 +8,19 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-export default function SerataPage({ params }: { params: { id: string } }) {
+interface PageProps {
+  params: {
+    id: string;
+  };
+}
+
+export default function SerataPage({ params }: PageProps) {
   const [batifondo, setBatifondo] = useState<any>(null);
-  const [serata, setSerata] = useState<any>(null);
+  const [capoA, setCapoA] = useState('');
+  const [capoB, setCapoB] = useState('');
   const [num, setNum] = useState(1);
   const [vinteA, setVinteA] = useState(0);
   const [vinteB, setVinteB] = useState(0);
-  const [capoA, setCapoA] = useState('');
-  const [capoB, setCapoB] = useState('');
   const [totaleA, setTotaleA] = useState(0);
   const [totaleB, setTotaleB] = useState(0);
   const [serataFinita, setSerataFinita] = useState(false);
@@ -29,7 +34,6 @@ export default function SerataPage({ params }: { params: { id: string } }) {
         .single();
 
       if (serate) {
-        setSerata(serate);
         setCapoA(serate.squadra_a.capo);
         setCapoB(serate.squadra_b.capo);
 
@@ -43,12 +47,11 @@ export default function SerataPage({ params }: { params: { id: string } }) {
           const current = batifondi[batifondi.length - 1];
           setBatifondo(current);
           setNum(current.numero);
-          setVinteA(current.vinte_a);
-          setVinteB(current.vinte_b);
+          setVinteA(current.vinte_a || 0);
+          setVinteB(current.vinte_b || 0);
 
-          // Calcola totale batifondi vinti
-          const vintiA = batifondi.filter(b => b.vincitore === 'A').length;
-          const vintiB = batifondi.filter(b => b.vincitore === 'B').length;
+          const vintiA = batifondi.filter((b: any) => b.vincitore === 'A').length;
+          const vintiB = batifondi.filter((b: any) => b.vincitore === 'B').length;
           setTotaleA(vintiA);
           setTotaleB(vintiB);
         }
@@ -58,20 +61,22 @@ export default function SerataPage({ params }: { params: { id: string } }) {
     fetchData();
 
     const channel = supabase
-      .channel('batifondi')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'batifondi' }, () => fetchData())
+      .channel('realtime-batifondi')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'batifondi', filter: `serata_id=eq.${params.id}` }, () => fetchData())
       .subscribe();
 
-    return () => { supabase.removeChannel(channel); };
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [params.id]);
 
   const addPunto = async (squadra: 'a' | 'b') => {
-    if (batifondo?.vincitore) return;
+    if (!batifondo || batifondo.vincitore) return;
 
-    const nuoveVinteA = squadra === 'a' ? vinteA + 1 : vinteA;
+    const nuoveVinteA = squadra === 'a' ? vin teA + 1 : vinteA;
     const nuoveVinteB = squadra === 'b' ? vinteB + 1 : vinteB;
 
-    let vincitore = null;
+    let vincitore: 'A' | 'B' | null = null;
     if (nuoveVinteA >= 7) vincitore = 'A';
     if (nuoveVinteB >= 7) vincitore = 'B';
 
@@ -81,7 +86,6 @@ export default function SerataPage({ params }: { params: { id: string } }) {
         .update({ vinte_a: nuoveVinteA, vinte_b: nuoveVinteB, vincitore })
         .eq('id', batifondo.id);
 
-      // Crea nuovo batifondo
       await supabase
         .from('batifondi')
         .insert({ serata_id: params.id, numero: num + 1 });
@@ -100,12 +104,10 @@ export default function SerataPage({ params }: { params: { id: string } }) {
         <h1 className="text-5xl font-bold text-center mb-2 text-yellow-400">TRIONFET</h1>
         <p className="text-center text-xl mb-4 opacity-90">Batifondo {num}</p>
 
-        {/* PUNTEGGIO TOTALE BATIFONDI */}
         <div className="text-center text-3xl font-bold mb-8 text-yellow-300">
           TOTALE BATIFONDI: {totaleA} - {totaleB}
         </div>
 
-        {/* PUNTEGGIO CORRENTE */}
         <div className="grid grid-cols-2 gap-6 text-center mb-10">
           <div className="bg-green-800/50 rounded-xl p-6 border-4 border-green-500">
             <h2 className="text-3xl font-bold text-green-300">{capoA}</h2>
@@ -117,7 +119,6 @@ export default function SerataPage({ params }: { params: { id: string } }) {
           </div>
         </div>
 
-        {/* PULSANTI +1 */}
         <div className="flex justify-center gap-8 mb-8">
           <button
             onClick={() => addPunto('a')}
@@ -139,7 +140,6 @@ export default function SerataPage({ params }: { params: { id: string } }) {
           </button>
         </div>
 
-        {/* VITTORIA BATIFONDO */}
         {batifondo?.vincitore && (
           <div className="mt-10 p-6 bg-gradient-to-r from-yellow-600 to-orange-600 rounded-xl text-center animate-pulse">
             <p className="text-3xl font-bold">
@@ -148,7 +148,6 @@ export default function SerataPage({ params }: { params: { id: string } }) {
           </div>
         )}
 
-        {/* PULSANTE FINISCI SERATA */}
         {(totaleA > 0 || totaleB > 0) && !serataFinita && (
           <div className="mt-12 text-center">
             <button
@@ -160,17 +159,16 @@ export default function SerataPage({ params }: { params: { id: string } }) {
           </div>
         )}
 
-        {/* SCHERMATA FINALE */}
         {serataFinita && (
           <div className="mt-12 p-10 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-3xl text-center">
             <h2 className="text-6xl font-bold mb-6">SERATA FINITA!</h2>
             {totaleA > totaleB ? (
               <p className="text-4xl font-bold text-green-300">
-                {capoA} E LA SUA CIURMA SONO I CAMPIONI! {totaleA} - {totaleB}
+                {capoA} E LA SUA CIURMA SONO I CAMPIONI! {totaleA}-{totaleB}
               </p>
             ) : totaleB > totaleA ? (
               <p className="text-4xl font-bold text-red-300">
-                {capoB} E LA SUA CIURMA DOMINANO! {totaleB} - {totaleA}
+                {capoB} E LA SUA CIURMA DOMINANO! {totaleB}-{totaleA}
               </p>
             ) : (
               <p className="text-4xl font-bold">PAREGGIO EPICO!</p>
