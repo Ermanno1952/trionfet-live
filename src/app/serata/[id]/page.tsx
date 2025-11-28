@@ -8,11 +8,7 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-interface PageProps {
-  params: { id: string };
-}
-
-export default function SerataPage({ params }: PageProps) {
+export default function SerataPage({ params }: { params: { id: string } }) {
   const [batifondo, setBatifondo] = useState<any>(null);
   const [capoA, setCapoA] = useState('');
   const [capoB, setCapoB] = useState('');
@@ -25,49 +21,42 @@ export default function SerataPage({ params }: PageProps) {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data: serate } = await supabase
+      const { data: serata } = await supabase
         .from('serate')
         .select('*')
         .eq('id', params.id)
         .single();
 
-      if (serate) {
-        setCapoA(serate.squadra_a.capo);
-        setCapoB(serate.squadra_b.capo);
+      if (!serata) return;
 
-        const { data: batifondi } = await supabase
-          .from('batifondi')
-          .select('*')
-          .eq('serata_id', params.id)
-          .order('numero', { ascending: true });
+      setCapoA(serata.squadra_a.capo);
+      setCapoB(serata.squadra_b.capo);
 
-        if (batifondi && batifondi.length > 0) {
-          const current = batifondi[batifondi.length - 1];
-          setBatifondo(current);
-          setNum(current.numero);
-          setVinteA(current.vinte_a || 0);
-          setVinteB(current.vinte_b || 0);
+      const { data: batifondi } = await supabase
+        .from('batifondi')
+        .select('*')
+        .eq('serata_id', params.id)
+        .order('numero', { ascending: true });
 
-          const vintiA = batifondi.filter((b: any) => b.vincitore === 'A').length;
-          const vintiB = batifondi.filter((b: any) => b.vincitore === 'B').length;
-          setTotaleA(vintiA);
-          setTotaleB(vintiB);
-        }
+      if (batifondi && batifondi.length > 0) {
+        const current = batifondi[batifondi.length - 1];
+        setBatifondo(current);
+        setNum(current.numero);
+        setVinteA(current.vinte_a || 0);
+        setVinteB(current.vinte_b || 0);
+
+        setTotaleA(batifondi.filter((b: any) => b.vincitore === 'A').length);
+        setTotaleB(batifondi.filter((b: any) => b.vincitore === 'B').length);
       }
     };
 
     fetchData();
 
     const channel = supabase
-      .channel('realtime-batifondi')
+      .channel('batifondi-channel')
       .on(
         'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'batifondi',
-          filter: `serata_id=eq.${params.id}`,
-        },
+        { event: '*', schema: 'public', table: 'batifondi', filter: `serata_id=eq.${params.id}` },
         () => fetchData()
       )
       .subscribe();
@@ -107,7 +96,6 @@ export default function SerataPage({ params }: PageProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-900 to-black text-white p-6 flex flex-col items-center">
       <div className="w-full max-w-lg">
-
         <h1 className="text-5xl font-bold text-center mb-2 text-yellow-400">TRIONFET</h1>
         <p className="text-center text-xl mb-4 opacity-90">Batifondo {num}</p>
 
@@ -188,7 +176,6 @@ export default function SerataPage({ params }: PageProps) {
             <p className="text-2xl mt-8">Alla prossima batosta!</p>
           </div>
         )}
-
       </div>
     </div>
   );
