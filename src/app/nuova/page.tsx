@@ -41,9 +41,8 @@ export default function NuovaSerata() {
       return;
     }
 
-    const id = data.id.split('-')[0]; // ID corto per URL
+    const id = data.id; // Usa l’intero UUID
     const url = `${window.location.origin}/serata/${id}`;
-    setLink(url);
   };
 
   return (
