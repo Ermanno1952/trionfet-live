@@ -8,7 +8,7 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-export default function SerataPage({ params }: { params: { id: string } }) {
+export default function SerataPage({ params }: { params: Promise<{ id: string }> }) {
   const [batifondo, setBatifondo] = useState<any>(null);
   const [capoA, setCapoA] = useState('');
   const [capoB, setCapoB] = useState('');
@@ -20,11 +20,12 @@ export default function SerataPage({ params }: { params: { id: string } }) {
   const [serataFinita, setSerataFinita] = useState(false);
 
   useEffect(() => {
+    const { id } = await params;
     const fetchData = async () => {
       const { data: serata } = await supabase
         .from('serate')
         .select('*')
-        .eq('id', params.id)
+        .eq('id', id)
         .single();
 
       if (!serata) return;
@@ -35,7 +36,7 @@ export default function SerataPage({ params }: { params: { id: string } }) {
       const { data: batifondi } = await supabase
         .from('batifondi')
         .select('*')
-        .eq('serata_id', params.id)
+        .eq('serata_id', id)
         .order('numero', { ascending: true });
 
       if (batifondi && batifondi.length > 0) {
@@ -56,7 +57,7 @@ export default function SerataPage({ params }: { params: { id: string } }) {
       .channel('batifondi-channel')
       .on(
         'postgres_changes',
-        { event: '*', schema: 'public', table: 'batifondi', filter: `serata_id=eq.${params.id}` },
+        { event: '*', schema: 'public', table: 'batifondi', filter: `serata_id=eq.${id}` },
         () => fetchData()
       )
       .subscribe();
@@ -64,7 +65,7 @@ export default function SerataPage({ params }: { params: { id: string } }) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [params.id]);
+  }, [id]);
 
   const addPunto = async (squadra: 'a' | 'b') => {
     if (!batifondo || batifondo.vincitore) return;
