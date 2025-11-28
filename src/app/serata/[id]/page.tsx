@@ -134,11 +134,11 @@ export default function Serata() {
   const vinteA = batifondo?.vinte_a || 0;
   const vinteB = batifondo?.vinte_b || 0;
 
-    return (
+      return (
     <div className="min-h-screen bg-gradient-to-br from-green-900 to-black text-white p-6 flex flex-col items-center">
       <div className="w-full max-w-lg">
 
-        <h1 className="  "text-5xl font-bold text-center mb-2 text-yellow-400">TRIONFET</h1>
+        <h1 className="text-5xl font-bold text-center mb-2 text-yellow-400">TRIONFET</h1>
         <p className="text-center text-xl mb-4 opacity-90">Batifondo {num}</p>
 
         {/* PUNTEGGIO TOTALE BATIFONDI */}
@@ -221,7 +221,7 @@ export default function Serata() {
                 {capoB} E LA SUA CIURMA DOMINANO! {totaleB} - {totaleA}
               </p>
             ) : (
-              <p className="text-4xl font-bold">PAREGGIO! Nessun vincitore stasera!</p>
+              <p className="text-4xl font-bold">PAREGGIO EPICO!</p>
             )}
             <p className="text-2xl mt-8">Alla prossima batosta!</p>
           </div>
