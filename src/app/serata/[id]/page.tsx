@@ -1,6 +1,6 @@
 'use client';
-import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+
+import { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
@@ -8,133 +8,92 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-export default function Serata() {
-  const { id } = useParams() as { id: string };
-  const [serata, setSerata] = useState<any>(null);
+export default function SerataPage({ params }: { params: { id: string } }) {
   const [batifondo, setBatifondo] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [serata, setSerata] = useState<any>(null);
+  const [num, setNum] = useState(1);
+  const [vinteA, setVinteA] = useState(0);
+  const [vinteB, setVinteB] = useState(0);
+  const [capoA, setCapoA] = useState('');
+  const [capoB, setCapoB] = useState('');
+  const [totaleA, setTotaleA] = useState(0);
+  const [totaleB, setTotaleB] = useState(0);
+  const [serataFinita, setSerataFinita] = useState(false);
 
   useEffect(() => {
-    if (!id) return;
-
-    // Carica la serata
-    const loadSerata = async () => {
-      const { data, error } = await supabase
+    const fetchData = async () => {
+      const { data: serate } = await supabase
         .from('serate')
         .select('*')
-        .eq('id', id)
+        .eq('id', params.id)
         .single();
 
-      if (error) {
-        console.error('Errore caricamento serata:', error);
-        setLoading(false);
-        return;
-      }
+      if (serate) {
+        setSerata(serate);
+        setCapoA(serate.squadra_a.capo);
+        setCapoB(serate.squadra_b.capo);
 
-      setSerata(data);
-      setLoading(false);
+        const { data: batifondi } = await supabase
+          .from('batifondi')
+          .select('*')
+          .eq('serata_id', params.id)
+          .order('numero', { ascending: true });
+
+        if (batifondi && batifondi.length > 0) {
+          const current = batifondi[batifondi.length - 1];
+          setBatifondo(current);
+          setNum(current.numero);
+          setVinteA(current.vinte_a);
+          setVinteB(current.vinte_b);
+
+          // Calcola totale batifondi vinti
+          const vintiA = batifondi.filter(b => b.vincitore === 'A').length;
+          const vintiB = batifondi.filter(b => b.vincitore === 'B').length;
+          setTotaleA(vintiA);
+          setTotaleB(vintiB);
+        }
+      }
     };
 
-    loadSerata();
+    fetchData();
 
-    // Realtime sul batifondo corrente
     const channel = supabase
-      .channel(`batifondo-${id}`)
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'batifondi',
-          filter: `serata_id=eq.${id}`,
-        },
-        (payload: any) => {
-          const newBatifondo = payload.new;
-          // Trova il batifondo corrente (senza vincitore o più alto numero)
-          if (!newBatifondo.vincitore) {
-            setBatifondo(newBatifondo);
-          } else if (!batifondo || batifondo.id === newBatifondo.id) {
-            setBatifondo(newBatifondo);
-          }
-        }
-      )
+      .channel('batifondi')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'batifondi' }, () => fetchData())
       .subscribe();
 
-    // Carica batifondo corrente iniziale
-    supabase
-      .from('batifondi')
-      .select('*')
-      .eq('serata_id', id)
-      .order('numero', { ascending: false })
-      .limit(1)
-      .single()
-      .then(({ data }) => {
-        if (data) setBatifondo(data);
-      });
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [id]);
+    return () => { supabase.removeChannel(channel); };
+  }, [params.id]);
 
   const addPunto = async (squadra: 'a' | 'b') => {
-    if (!batifondo || batifondo.vincitore) return;
+    if (batifondo?.vincitore) return;
 
-    const field = squadra === 'a' ? 'vinte_a' : 'vinte_b';
-    const current = batifondo[field] || 0;
-    const nuovo = current + 1;
+    const nuoveVinteA = squadra === 'a' ? vinteA + 1 : vinteA;
+    const nuoveVinteB = squadra === 'b' ? vinteB + 1 : vinteB;
 
-    const { error } = await supabase
-      .from('batifondi')
-      .update({ [field]: nuovo })
-      .eq('id', batifondo.id);
+    let vincitore = null;
+    if (nuoveVinteA >= 7) vincitore = 'A';
+    if (nuoveVinteB >= 7) vincitore = 'B';
 
-    if (error) {
-      console.error('Errore aggiornamento:', error);
-      return;
-    }
-
-    // Se arriva a 7 → chiudi e crea nuovo
-    if (nuovo === 7) {
+    if (vincitore) {
       await supabase
         .from('batifondi')
-        .update({ vincitore: squadra.toUpperCase() })
+        .update({ vinte_a: nuoveVinteA, vinte_b: nuoveVinteB, vincitore })
         .eq('id', batifondo.id);
 
+      // Crea nuovo batifondo
       await supabase
         .from('batifondi')
-        .insert({
-          serata_id: id,
-          numero: (batifondo.numero || 1) + 1,
-          vinte_a: 0,
-          vinte_b: 0,
-        });
+        .insert({ serata_id: params.id, numero: num + 1 });
+    } else {
+      await supabase
+        .from('batifondi')
+        .update({ vinte_a: nuoveVinteA, vinte_b: nuoveVinteB })
+        .eq('id', batifondo.id);
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-green-900 to-black text-white flex items-center justify-center">
-        <p className="text-2xl">Caricamento serata...</p>
-      </div>
-    );
-  }
-
-  if (!serata) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-green-900 to-black text-white flex items-center justify-center">
-        <p className="text-2xl text-red-400">Serata non trovata!</p>
-      </div>
-    );
-  }
-
-  const capoA = serata.squadra_a.capo;
-  const capoB = serata.squadra_b.capo;
-  const num = batifondo?.numero || 1;
-  const vinteA = batifondo?.vinte_a || 0;
-  const vinteB = batifondo?.vinte_b || 0;
-
-      return (
+  return (
     <div className="min-h-screen bg-gradient-to-br from-green-900 to-black text-white p-6 flex flex-col items-center">
       <div className="w-full max-w-lg">
 
@@ -164,9 +123,7 @@ export default function Serata() {
             onClick={() => addPunto('a')}
             disabled={!!batifondo?.vincitore}
             className={`px-10 py-6 rounded-full text-3xl font-bold transition-all transform hover:scale-110 ${
-              batifondo?.vincitore
-                ? 'bg-gray-600 cursor-not-allowed'
-                : 'bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg'
+              batifondo?.vincitore ? 'bg-gray-600 cursor-not-allowed' : 'bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg'
             }`}
           >
             +1 {capoA}
@@ -175,9 +132,7 @@ export default function Serata() {
             onClick={() => addPunto('b')}
             disabled={!!batifondo?.vincitore}
             className={`px-10 py-6 rounded-full text-3xl font-bold transition-all transform hover:scale-110 ${
-              batifondo?.vincitore
-                ? 'bg-gray-600 cursor-not-allowed'
-                : 'bg-gradient-to-r from-red-500 to-rose-600 text-white shadow-lg'
+              batifondo?.vincitore ? 'bg-gray-600 cursor-not-allowed' : 'bg-gradient-to-r from-red-500 to-rose-600 text-white shadow-lg'
             }`}
           >
             +1 {capoB}
@@ -188,10 +143,7 @@ export default function Serata() {
         {batifondo?.vincitore && (
           <div className="mt-10 p-6 bg-gradient-to-r from-yellow-600 to-orange-600 rounded-xl text-center animate-pulse">
             <p className="text-3xl font-bold">
-              BATIFONDO {num} VINTO DA{' '}
-              <span className="text-4xl">
-                {batifondo.vincitore === 'A' ? capoA : capoB}!
-              </span>
+              BATIFONDO {num} VINTO DA <span className="text-4xl">{batifondo.vincitore === 'A' ? capoA : capoB}!</span>
             </p>
           </div>
         )}
