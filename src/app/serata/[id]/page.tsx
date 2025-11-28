@@ -9,9 +9,7 @@ const supabase = createClient(
 );
 
 interface PageProps {
-  params: {
-    id: string;
-  };
+  params: { id: string };
 }
 
 export default function SerataPage({ params }: PageProps) {
@@ -62,7 +60,16 @@ export default function SerataPage({ params }: PageProps) {
 
     const channel = supabase
       .channel('realtime-batifondi')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'batifondi', filter: `serata_id=eq.${params.id}` }, () => fetchData())
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'batifondi',
+          filter: `serata_id=eq.${params.id}`,
+        },
+        () => fetchData()
+      )
       .subscribe();
 
     return () => {
@@ -73,7 +80,7 @@ export default function SerataPage({ params }: PageProps) {
   const addPunto = async (squadra: 'a' | 'b') => {
     if (!batifondo || batifondo.vincitore) return;
 
-    const nuoveVinteA = squadra === 'a' ? vin teA + 1 : vinteA;
+    const nuoveVinteA = squadra === 'a' ? vinteA + 1 : vinteA;
     const nuoveVinteB = squadra === 'b' ? vinteB + 1 : vinteB;
 
     let vincitore: 'A' | 'B' | null = null;
@@ -124,7 +131,9 @@ export default function SerataPage({ params }: PageProps) {
             onClick={() => addPunto('a')}
             disabled={!!batifondo?.vincitore}
             className={`px-10 py-6 rounded-full text-3xl font-bold transition-all transform hover:scale-110 ${
-              batifondo?.vincitore ? 'bg-gray-600 cursor-not-allowed' : 'bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg'
+              batifondo?.vincitore
+                ? 'bg-gray-600 cursor-not-allowed'
+                : 'bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg'
             }`}
           >
             +1 {capoA}
@@ -133,7 +142,9 @@ export default function SerataPage({ params }: PageProps) {
             onClick={() => addPunto('b')}
             disabled={!!batifondo?.vincitore}
             className={`px-10 py-6 rounded-full text-3xl font-bold transition-all transform hover:scale-110 ${
-              batifondo?.vincitore ? 'bg-gray-600 cursor-not-allowed' : 'bg-gradient-to-r from-red-500 to-rose-600 text-white shadow-lg'
+              batifondo?.vincitore
+                ? 'bg-gray-600 cursor-not-allowed'
+                : 'bg-gradient-to-r from-red-500 to-rose-600 text-white shadow-lg'
             }`}
           >
             +1 {capoB}
@@ -143,7 +154,8 @@ export default function SerataPage({ params }: PageProps) {
         {batifondo?.vincitore && (
           <div className="mt-10 p-6 bg-gradient-to-r from-yellow-600 to-orange-600 rounded-xl text-center animate-pulse">
             <p className="text-3xl font-bold">
-              BATIFONDO {num} VINTO DA <span className="text-4xl">{batifondo.vincitore === 'A' ? capoA : capoB}!</span>
+              BATIFONDO {num} VINTO DA{' '}
+              <span className="text-4xl">{batifondo.vincitore === 'A' ? capoA : capoB}!</span>
             </p>
           </div>
         )}
