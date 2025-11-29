@@ -1,4 +1,5 @@
 'use client';
+
 import { useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
@@ -14,7 +15,7 @@ export default function NuovaSerata() {
   const [giocatoriB, setGiocatoriB] = useState('');
   const [link, setLink] = useState('');
 
-    const crea = async () => {
+  const crea = async () => {
     if (!capoA || !capoB || !giocatoriA || !giocatoriB) {
       alert('Compila tutti i campi!');
       return;
@@ -35,24 +36,22 @@ export default function NuovaSerata() {
       .select()
       .single();
 
-    if (error) {
-      console.error('Errore:', error);
+    const result = await data;
+
+    if (error || !result) {
       alert('Errore nella creazione. Riprova.');
       return;
     }
 
-    const id = data.id;
-    const url = `${window.location.origin}/serata/${id}`;
+    const url = `${window.location.origin}/serata/${result.id}`;
     setLink(url);
 
-    // SCROLL + FOCUS IMMEDIATO AL LINK
     setTimeout(() => {
       window.scrollTo({
         top: document.body.scrollHeight,
         behavior: 'smooth'
       });
     }, 150);
-  };
   };
 
   return (
@@ -62,7 +61,6 @@ export default function NuovaSerata() {
         <h2 className="text-xl text-center mb-8 opacity-90">Nuova Serata</h2>
 
         <div className="space-y-6">
-          {/* SQUADRA A */}
           <div className="bg-white/5 rounded-lg p-4">
             <label className="block text-sm font-bold text-green-300 mb-1">CAPO SQUADRA A</label>
             <input
@@ -83,7 +81,6 @@ export default function NuovaSerata() {
             />
           </div>
 
-          {/* SQUADRA B */}
           <div className="bg-white/5 rounded-lg p-4">
             <label className="block text-sm font-bold text-red-300 mb-1">CAPO SQUADRA B</label>
             <input
@@ -112,15 +109,15 @@ export default function NuovaSerata() {
           </button>
 
           {link && (
-            <div className="mt-6 p-4 bg-gradient-to-r from-green-600 to-emerald-600 rounded-lg text-center">
-              <p className="font-bold text-lg mb-2">CONDIVIDI SU WHATSAPP:</p>
-              <p className="text-sm break-all font-mono bg-black/30 p-2 rounded">{link}</p>
+            <div className="mt-8 p-6 bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl text-center animate-pulse">
+              <p className="font-bold text-lg mb-3">CONDIVIDI SU WHATSAPP:</p>
+              <p className="text-sm break-all font-mono bg-black/40 p-3 rounded mb-4">{link}</p>
               <button
                 onClick={() => {
                   navigator.clipboard.writeText(link);
                   alert('Link copiato!');
                 }}
-                className="mt-3 bg-white text-green-700 px-4 py-2 rounded font-bold"
+                className="bg-white text-green-700 px-6 py-3 rounded-lg font-bold text-lg"
               >
                 COPIA LINK
               </button>
@@ -129,5 +126,5 @@ export default function NuovaSerata() {
         </div>
       </div>
     </div>
-);
+  );
 }
