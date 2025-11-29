@@ -222,7 +222,7 @@ export default function SerataPage({ params }: { params: Promise<{ id: string }>
         )}
 
         {serataFinita && (
-          <div className="mt-8 p-8 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-3xl text-center animate-bounce">
+          <div <div className="mt-8 p-8 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-3xl text-center">
             <h2 className="text-5xl font-bold mb-6">SERATA FINITA!</h2>
 
             {totaleA > totaleB ? (
