@@ -138,33 +138,39 @@ export default function SerataPage({ params }: { params: Promise<{ id: string }>
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-900 to-black text-white p-4 pb-20 flex flex-col">
       <div className="w-full max-w-lg mx-auto space-y-4">
-
-                      {/* TITOLO + PULSANTI IN ALTO – PERFETTO E SENZA SOVRAPPOSIZIONI */}
-        <div className="flex justify-between items-center mb-8 px-2">
-          <div className="flex-1" /> {/* Spazio a sinistra */}
-
-          <h1 className="text-5xl font-bold text-yellow-400 text-center flex-1">
+        {/* TITOLO CENTRALE – GRANDE E BELLISSIMO (non sparisce più!) */}
+        <div className="text-center mb-8 pt-4">
+          <h1 className="text-6xl md:text-7xl font-bold text-yellow-400 drop-shadow-2xl">
             TRIONFET
           </h1>
-
-          <div className="flex gap-3">
-            {/* PULSANTE MODIFICA – ICONA PENNA */}
-            <button
-              onClick={() => window.location.href = `/modifica/${id}`}
-              className="bg-white/20 hover:bg-white/40 p-4 rounded-full backdrop-blur-md transition-all shadow-lg hover:scale-110"
-              title="Modifica nomi"
-            >
-              Penna
-            </button>
-
-            {/* PULSANTE CLASSIFICA */}
-            <button
-              onClick={() => window.location.href = '/classifica'}
-              className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-black px-6 py-3 rounded-full font-bold text-lg shadow-xl hover:scale-105 transition-all"
-            >
-              CLASSIFICA
-            </button>
+          <p className="text-xl md:text-2xl opacity-90 mt-2">Batifondo {num}</p>
+          
+          {/* TOTALE BATIFONDI – VA A CAPO */}
+          <div className="text-2xl md:text-3xl font-bold text-yellow-300 mt-4 leading-tight">
+            TOTALE BATIFONDI<br />
+            <span className="text-4xl md:text-5xl">{totaleA} - {totaleB}</span>
           </div>
+        </div>
+                             {/* PULSANTI IN BASSO – FISSI E BELLISSIMI */}
+        <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 flex gap-6 z-50">
+          {/* PULSANTE MODIFICA – ICONA PENNA */}
+          <button
+            onClick={() => window.location.href = `/modifica/${id}`}
+            className="bg-white/20 hover:bg-white/30 backdrop-blur-md p-5 rounded-full shadow-2xl transition-all hover:scale-110 active:scale-95"
+            title="Modifica nomi"
+          >
+            Penna (bianca, grande e bellissima)
+          </button>
+
+          {/* PULSANTE CLASSIFICA – ICONA TROFEO */}
+          <button
+            onClick={() => window.location.href = '/classifica'}
+            className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-black p-5 rounded-full shadow-2xl transition-all hover:scale-110 active:scale-95 flex items-center justify-center"
+            title="Classifica storica"
+          >
+            Trofeo (dorato, epico)
+          </button>
+        </div>
         </div>
         <p className="text-center text-lg opacity-90">Batifondo {num}</p>
 
