@@ -129,5 +129,5 @@ export default function NuovaSerata() {
         </div>
       </div>
     </div>
-  );
+);
 }
