@@ -20,12 +20,10 @@ export default function SerataPage({ params }: { params: Promise<{ id: string }>
   const [totaleB, setTotaleB] = useState(0);
   const [serataFinita, setSerataFinita] = useState(false);
 
-  // Gestione Promise Next.js 15
   useEffect(() => {
-    params.then((p) => setId(p.id));
+    params.then(p => setId(p.id));
   }, [params]);
 
-  // Caricamento dati + realtime
   useEffect(() => {
     if (!id) return;
 
@@ -83,7 +81,7 @@ export default function SerataPage({ params }: { params: Promise<{ id: string }>
 
     let vincitore: 'A' | 'B' | null = null;
     if (nuoveVinteA >= 7) vincitore = 'A';
-    if (nuoveVinteB >= 7) vincitore = 'B';
+    if (nuoveVinteB >=  >= 7) vincitore = 'B';
 
     if (vincitore) {
       await supabase
@@ -103,9 +101,7 @@ export default function SerataPage({ params }: { params: Promise<{ id: string }>
   };
 
   const removePunto = async (squadra: 'a' | 'b') => {
-    if (!batifondo || batifondo.vincitore) return;
-    if (squadra === 'a' && vinteA === 0) return;
-    if (squadra === 'b' && vinteB === 0) return;
+    if (!batifondo || batifondo.vincitore || (squadra === 'a' && vinteA === 0) || (squadra === 'b' && vinteB === 0)) return;
 
     const nuoveVinteA = squadra === 'a' ? vinteA - 1 : vinteA;
     const nuoveVinteB = squadra === 'b' ? vinteB - 1 : vinteB;
@@ -115,178 +111,120 @@ export default function SerataPage({ params }: { params: Promise<{ id: string }>
       .update({ vinte_a: nuoveVinteA, vinte_b: nuoveVinteB })
       .eq('id', batifondo.id);
   };
+
   const trashTalkVincitore = () => {
     const frasi = [
-      "Alla lunga i più forti vengono fuori… e stasera erano chiaramente dall’altra parte del tavolo!",
-      "I migliori sono quelli che vincono anche senza fortuna… e voi ne avevate proprio zero!",
-      "Chi ride ultimo ride meglio… e stasera ridiamo noi fino a domani!",
-      "La classe non è acqua… e voi stasera eravate in modalità deserto del Sahara!",
-      "Si dice che la vendetta è un piatto che va servito freddo… ma voi avete servito solo patatine fredde!",
-      "Avete giocato bene… peccato che noi abbiamo giocato meglio!",
-      "La ruota gira… ma stasera era inchiodata dalla nostra parte!",
-      "Avete fatto del vostro meglio… che purtroppo non era abbastanza!",
-      "Chi semina vento raccoglie tempesta… e voi avete raccolto solo figurine!",
-      "Il Trionfet è come il vino: più invecchia, più diventa forte… soprattutto se sei tu a perdere!",
-      "Avete tenuto duro fino alla fine… ma alla fine avete mollato come sempre!",
-      "Complimenti per il secondo posto… il primo è già occupato!",
-      "Avete perso con stile… ma avete perso lo stesso!",
-      "La prossima volta portate anche la fortuna… perché il talento da solo non basta!",
-      "Siete stati grandi… nel perdere!",
+      "Alla lunga i più forti vengono fuori… e stasera erano dall’altra parte!",
+      "I migliori vincono anche senza fortuna… voi ne avevate zero!",
+      "Chi ride ultimo ride meglio… e stasera ridiamo noi!",
+      "La classe non è acqua… voi eravate nel Sahara!",
+      "Avete perso con stile… ma avete perso lo stesso!"
     ];
     return frasi[Math.floor(Math.random() * frasi.length)];
   };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-900 to-black text-white p-4 pb-20 flex flex-col">
-      <div className="w-full max-w-lg mx-auto space-y-4">
-        {/* TITOLO CENTRALE – GRANDE E BELLISSIMO (non sparisce più!) */}
-        <div className="text-center mb-8 pt-4">
-          <h1 className="text-6xl md:text-7xl font-bold text-yellow-400 drop-shadow-2xl">
-            TRIONFET
-          </h1>
-          <p className="text-xl md:text-2xl opacity-90 mt-2">Batifondo {num}</p>
-          
-          {/* TOTALE BATIFONDI – VA A CAPO */}
-          <div className="text-2xl md:text-3xl font-bold text-yellow-300 mt-4 leading-tight">
+    <div className="min-h-screen bg-gradient-to-br from-green-900 to-black text-white p-4 pb-32 flex flex-col items-center relative">
+      <div className="w-full max-w-lg mx-auto space-y-6">
+
+        {/* TITOLO CENTRALE */}
+        <div className="text-center pt-6">
+          <h1 className="text-6xl md:text-7xl font-bold text-yellow-400 drop-shadow-2xl">TRIONFET</h1>
+          <p className="text-xl mt-2 opacity-90">Batifondo {num}</p>
+          <div className="text-3xl font-bold text-yellow-300 mt-4">
             TOTALE BATIFONDI<br />
-            <span className="text-4xl md:text-5xl">{totaleA} - {totaleB}</span>
+            <span className="text-5xl">{totaleA} - {totaleB}</span>
           </div>
         </div>
-                             {/* PULSANTI IN BASSO – FISSI E BELLISSIMI */}
-        <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 flex gap-6 z-50">
-          {/* PULSANTE MODIFICA – ICONA PENNA */}
-          <button
-            onClick={() => window.location.href = `/modifica/${id}`}
-            className="bg-white/20 hover:bg-white/30 backdrop-blur-md p-5 rounded-full shadow-2xl transition-all hover:scale-110 active:scale-95"
-            title="Modifica nomi"
-          >
-            Penna (bianca, grande e bellissima)
-          </button>
 
-          {/* PULSANTE CLASSIFICA – ICONA TROFEO */}
-          <button
-            onClick={() => window.location.href = '/classifica'}
-            className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-black p-5 rounded-full shadow-2xl transition-all hover:scale-110 active:scale-95 flex items-center justify-center"
-            title="Classifica storica"
-          >
-            Trofeo (dorato, epico)
-          </button>
-        </div>
-        </div>
-        <p className="text-center text-lg opacity-90">Batifondo {num}</p>
-
-        <div className="text-center text-2xl font-bold text-yellow-300 leading-tight">
-          TOTALE BATIFONDI<br />
-          <span className="text-4xl">{totaleA} - {totaleB}</span>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-green-800/50 rounded-xl p-5 border-4 border-green-500 text-center">
+        {/* PUNTEGGI */}
+        <div className="grid grid-cols-2 gap-6">
+          <div className="bg-green-800/50 rounded-2xl p-6 border-4 border-green-500 text-center">
             <h2 className="text-2xl font-bold text-green-300 truncate">{capoA || '...'}</h2>
-            <p className="text-7xl font-bold my-2">{vinteA}</p>
-
-            <div className="flex justify-center gap-3 mt-3">
-              <button
-                onClick={() => addPunto('a')}
-                disabled={!!batifondo?.vincitore}
-                className={`px-8 py-4 rounded-full text-2xl font-bold transition-all ${
-                  batifondo?.vincitore
-                    ? 'bg-gray-600'
-                    : 'bg-gradient-to-r from-green-500 to-emerald-600 shadow-lg hover:scale-110'
-                }`}
-              >
+            <p className="text-8xl font-bold my-4">{vinteA}</p>
+            <div className="flex justify-center gap-4">
+              <button onClick={() => addPunto('a')} disabled={!!batifondo?.vincitore}
+                className={`px-10 py-5 rounded-full text-3xl font-bold ${batifondo?.vincitore ? 'bg-gray-600' : 'bg-gradient-to-r from-green-500 to-emerald-600 shadow-xl hover:scale-110'}`}>
                 +1
               </button>
-              <button
-                onClick={() => removePunto('a')}
-                disabled={vinteA === 0 || !!batifondo?.vincitore}
-                className="px-8 py-4 rounded-full text-2xl font-bold bg-gray-700 hover:bg-gray-600 disabled:opacity-30"
-              >
-                -1
+              <button onClick={() => removePunto('a')} disabled={vinteA === 0 || !!batifondo?.vincitore}
+                className="px-10 py-5 rounded-full text-3xl font-bold bg-gray-700 hover:bg-gray-600 disabled:opacity-30">
+                −1
               </button>
             </div>
           </div>
 
-          <div className="bg-red-800/50 rounded-xl p-5 border-4 border-red-500 text-center">
+          <div className="bg-red-800/50 rounded-2xl p-6 border-4 border-red-500 text-center">
             <h2 className="text-2xl font-bold text-red-300 truncate">{capoB || '...'}</h2>
-            <p className="text-7xl font-bold my-2">{vinteB}</p>
-
-            <div className="flex justify-center gap-3 mt-3">
-              <button
-                onClick={() => addPunto('b')}
-                disabled={!!batifondo?.vincitore}
-                className={`px-8 py-4 rounded-full text-2xl font-bold transition-all ${
-                  batifondo?.vincitore
-                    ? 'bg-gray-600'
-                    : 'bg-gradient-to-r from-red-500 to-rose-600 shadow-lg hover:scale-110'
-                }`}
-              >
+            <p className="text-8xl font-bold my-4">{vinteB}</p>
+            <div className="flex justify-center gap-4">
+              <button onClick={() => addPunto('b')} disabled={!!batifondo?.vincitore}
+                className={`px-10 py-5 rounded-full text-3xl font-bold ${batifondo?.vincitore ? 'bg-gray-600' : 'bg-gradient-to-r from-red-500 to-rose-600 shadow-xl hover:scale-110'}`}>
                 +1
               </button>
-              <button
-                onClick={() => removePunto('b')}
-                disabled={vinteB === 0 || !!batifondo?.vincitore}
-                className="px-8 py-4 rounded-full text-2xl font-bold bg-gray-700 hover:bg-gray-600 disabled:opacity-30"
-              >
-                -1
+              <button onClick={() => removePunto('b')} disabled={vinteB === 0 || !!batifondo?.vincitore}
+                className="px-10 py-5 rounded-full text-3xl font-bold bg-gray-700 hover:bg-gray-600 disabled:opacity-30">
+                −1
               </button>
             </div>
           </div>
         </div>
 
         {batifondo?.vincitore && (
-          <div className="p-5 bg-gradient-to-r from-yellow-600 to-orange-600 rounded-xl text-center animate-pulse">
-            <p className="text-2xl font-bold">
-              BATIFONDO {num} VINTO DA{' '}
-              <span className="text-3xl">{batifondo.vincitore === 'A' ? capoA : capoB}!</span>
+          <div className="p-6 bg-gradient-to-r from-yellow-600 to-orange-600 rounded-2xl text-center animate-pulse">
+            <p className="text-3xl font-bold">
+              BATIFONDO {num} VINTO DA <span className="text-4xl">{batifondo.vincitore === 'A' ? capoA : capoB}!</span>
             </p>
           </div>
         )}
 
         {(totaleA > 0 || totaleB > 0) && !serataFinita && (
-          <div className="text-center mt-8">
-            <button
-              onClick={() => setSerataFinita(true)}
-              className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-10 py-5 rounded-full text-2xl font-bold shadow-2xl hover:scale-105 transition-all"
-            >
-              FINISCI SERATA – VINCITORE!
-            </button>
-          </div>
+          <button
+            onClick={() => setSerataFinita(true)}
+            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 py-6 rounded-2xl text-3xl font-bold shadow-2xl hover:scale-105"
+          >
+            FINISCI SERATA – DICHIARA IL VINCITORE!
+          </button>
         )}
 
         {serataFinita && (
-          <div className="mt-8 p-8 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-3xl text-center">
-            <h2 className="text-5xl font-bold mb-6">SERATA FINITA!</h2>
-
+          <div className="p-10 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-3xl text-center animate-bounce">
+            <h2 className="text-6xl font-bold mb-6">SERATA FINITA!</h2>
             {totaleA > totaleB ? (
               <>
-                <p className="text-4xl font-bold text-green-300 mb-4">
-                  {capoA} E LA SUA CIURMA SONO I CAMPIONI! {totaleA}-{totaleB}
-                </p>
-                <p className="text-2xl italic opacity-90 mt-6">
-                  {trashTalkVincitore()}
-                </p>
-                <p className="text-xl mt-4 font-bold text-red-300">
-                  {capoB} stasera ha scoperto che la fortuna aiuta gli audaci… ma non i brocchi!
-                </p>
+                <p className="text-4xl font-bold text-green-300 mb-4">{capoA} CAMPIONE! {totaleA}-{totaleB}</p>
+                <p className="text-2xl italic">{trashTalkVincitore()}</p>
               </>
             ) : totaleB > totaleA ? (
               <>
-                <p className="text-4xl font-bold text-red-300 mb-4">
-                  {capoB} E LA SUA CIURMA DOMINANO! {totaleB}-{totaleA}
-                </p>
-                <p className="text-2xl italic opacity-90 mt-6">
-                  {trashTalkVincitore()}
-                </p>
-                <p className="text-xl mt-4 font-bold text-green-300">
-                  {capoA} ha imparato che anche con le carte migliori… si può perdere lo stesso!
-                </p>
+                <p className="text-4xl font-bold text-red-300 mb-4">{capoB} DOMINA! {totaleB}-{totaleA}</p>
+                <p className="text-2xl italic">{trashTalkVincitore()}</p>
               </>
             ) : (
-              <p className="text-4xl font-bold">PAREGGIO EPICO! Nessuno ha vinto… ma nessuno ha perso davvero!</p>
+              <p className="text-4xl font-bold">PAREGGIO EPICO!</p>
             )}
-            <p className="text-xl mt-8">Alla prossima batosta!</p>
+            <p className="text-2xl mt-8">Alla prossima batosta!</p>
           </div>
         )}
+      </div>
+
+      {/* PULSANTI FISSI IN BASSO */}
+      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 flex gap-10 z-50">
+        <button
+          onClick={() => window.location.href = `/modifica/${id}`}
+          className="bg-white/20 hover:bg-white/30 backdrop-blur-md p-6 rounded-full shadow-2xl transition-all hover:scale-110"
+          title="Modifica nomi"
+        >
+          Penna
+        </button>
+
+        <button
+          onClick={() => window.location.href = '/classifica'}
+          className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-black p-6 rounded-full shadow-2xl transition-all hover:scale-110 flex items-center justify-center"
+          title="Classifica storica"
+        >
+          Trofeo
+        </button>
       </div>
     </div>
   );
