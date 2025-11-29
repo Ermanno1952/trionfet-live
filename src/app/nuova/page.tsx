@@ -26,11 +26,11 @@ export default function NuovaSerata() {
       .insert({
         squadra_a: {
           capo: capoA,
-          giocatori: giocatoriA.split(',').map(s => s.trim()).filter(Boolean)
+          giocatori: giocatoriA.trim().split(/\s+/).filter(Boolean)
         },
         squadra_b: {
           capo: capoB,
-          giocatori: giocatoriB.split(',').map(s => s.trim()).filter(Boolean)
+          giocatori: giocatoriB.trim().split(/\s+/).filter(Boolean)
         },
       })
       .select()
@@ -76,9 +76,12 @@ export default function NuovaSerata() {
             <label className="block text-sm font-bold text-green-300 mb-1">GIOCATORI A (separati da virgola)</label>
             <input
               value={giocatoriA}
-              onChange={e => setGiocatoriA(e.target.value)}
-              placeholder="Bepino, Ermanno, Tullio"
-              className="w-full p-3 rounded bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500"
+  onChange={e => setGiocatoriA(e.target.value)}
+  placeholder="Mario Bepino Tullio (spazio invece di virgola)"
+  className="w-full p-3 rounded bg-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
+  // MAGIA CELLULARE: tastiera con punto e spazio grandi
+  inputMode="text"
+  autoComplete="off"
             />
           </div>
 
@@ -96,9 +99,11 @@ export default function NuovaSerata() {
             <label className="block text-sm font-bold text-red-300 mb-1">GIOCATORI B (separati da virgola)</label>
             <input
               value={giocatoriB}
-              onChange={e => setGiocatoriB(e.target.value)}
-              placeholder="Piero, Roberto, Luciano"
-              className="w-full p-3 rounded bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500"
+  onChange={e => setGiocatoriB(e.target.value)}
+  placeholder="Fabio Piero Roberto (solo spazi)"
+  className="w-full p-3 rounded bg-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
+  inputMode="text"
+  autoComplete="off"
             />
           </div>
 
