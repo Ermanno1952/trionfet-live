@@ -139,24 +139,28 @@ export default function SerataPage({ params }: { params: Promise<{ id: string }>
     <div className="min-h-screen bg-gradient-to-br from-green-900 to-black text-white p-4 pb-20 flex flex-col">
       <div className="w-full max-w-lg mx-auto space-y-4">
 
-                {/* TITOLO + PULSANTI IN ALTO */}
-        <div className="relative mb-6">
-          <h1 className="text-5xl font-bold text-center text-yellow-400">TRIONFET</h1>
+                      {/* TITOLO + PULSANTI IN ALTO – PERFETTO E SENZA SOVRAPPOSIZIONI */}
+        <div className="flex justify-between items-center mb-8 px-2">
+          <div className="flex-1" /> {/* Spazio a sinistra */}
 
-          <div className="absolute top-0 right-0 flex gap-3">
-            {/* RUOTA DENTATA – MODIFICA NOMI */}
+          <h1 className="text-5xl font-bold text-yellow-400 text-center flex-1">
+            TRIONFET
+          </h1>
+
+          <div className="flex gap-3">
+            {/* PULSANTE MODIFICA – ICONA PENNA */}
             <button
               onClick={() => window.location.href = `/modifica/${id}`}
-              className="bg-white/20 hover:bg-white/40 p-4 rounded-full backdrop-blur-md transition-all shadow-lg"
-              title="Modifica capi e giocatori"
+              className="bg-white/20 hover:bg-white/40 p-4 rounded-full backdrop-blur-md transition-all shadow-lg hover:scale-110"
+              title="Modifica nomi"
             >
-              Ruota Dentata
+              Penna
             </button>
 
             {/* PULSANTE CLASSIFICA */}
             <button
               onClick={() => window.location.href = '/classifica'}
-              className="bg-gradient-to-r from-yellow-500 to-orange-500 text-black px-800 px-6 py-3 rounded-full font-bold text-lg shadow-xl hover:scale-105 transition-all"
+              className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-black px-6 py-3 rounded-full font-bold text-lg shadow-xl hover:scale-105 transition-all"
             >
               CLASSIFICA
             </button>
