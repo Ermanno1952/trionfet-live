@@ -14,7 +14,7 @@ export default function NuovaSerata() {
   const [giocatoriB, setGiocatoriB] = useState('');
   const [link, setLink] = useState('');
 
-  const crea = async () => {
+    const crea = async () => {
     if (!capoA || !capoB || !giocatoriA || !giocatoriB) {
       alert('Compila tutti i campi!');
       return;
@@ -41,17 +41,18 @@ export default function NuovaSerata() {
       return;
     }
 
-    const id = data.id; // Usa l’intero UUID
+    const id = data.id;
     const url = `${window.location.origin}/serata/${id}`;
-        setLink(url);
+    setLink(url);
 
-    // SCROLL AUTOMATICO AL LINK (addio pagina bianca!)
+    // SCROLL + FOCUS IMMEDIATO AL LINK
     setTimeout(() => {
       window.scrollTo({
         top: document.body.scrollHeight,
         behavior: 'smooth'
       });
-    }, 100);
+    }, 150);
+  };
   };
 
   return (
