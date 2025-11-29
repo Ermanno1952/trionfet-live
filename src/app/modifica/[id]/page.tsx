@@ -9,27 +9,34 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-export default function ModificaSerata({ params }: { params: { id: string } }) {
+export default function ModificaSerata({ params }: { params: Promise<{ id: string }> }) {
+  const [id, setId] = useState<string>('');
   const [capoA, setCapoA] = useState('');
   const [giocatoriA, setGiocatoriA] = useState('');
   const [capoB, setCapoB] = useState('');
   const [giocatoriB, setGiocatoriB] = useState('');
-  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
+  // Risolve il Promise di Next.js 15
   useEffect(() => {
+    params.then(p => setId(p.id));
+  }, [params]);
+
+  // Carica i dati solo quando abbiamo l'id
+  useEffect(() => {
+    if (!id) return;
+
     const fetch = async () => {
-      const { data } = await supabase.from('serate').select('*').eq('id', params.id).single();
+      const { data } = await supabase.from('serate').select('*').eq('id', id).single();
       if (data) {
         setCapoA(data.squadra_a.capo);
         setGiocatoriA(data.squadra_a.giocatori.join(' '));
         setCapoB(data.squadra_b.capo);
         setGiocatoriB(data.squadra_b.giocatori.join(' '));
       }
-      setLoading(false);
     };
     fetch();
-  }, [params.id]);
+  }, [id]);
 
   const salva = async () => {
     await supabase
@@ -38,13 +45,13 @@ export default function ModificaSerata({ params }: { params: { id: string } }) {
         squadra_a: { capo: capoA, giocatori: giocatoriA.trim().split(/\s+/).filter(Boolean) },
         squadra_b: { capo: capoB, giocatori: giocatoriB.trim().split(/\s+/).filter(Boolean) }
       })
-      .eq('id', params.id);
+      .eq('id', id);
 
     alert('Nomi aggiornati!');
-    router.push(`/serata/${params.id}`);
+    router.push(`/serata/${id}`);
   };
 
-  if (loading) return <div className="text-white text-3xl text-center mt-20">Caricamento...</div>;
+  if (!id) return <div className="text-white text-3xl text-center mt-20">Caricamento...</div>;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-900 to-black text-white p-6 flex items-center justify-center">
@@ -62,7 +69,7 @@ export default function ModificaSerata({ params }: { params: { id: string } }) {
             <button onClick={salva} className="flex-1 bg-green-600 hover:bg-green-500 py-4 rounded-xl font-bold text-xl">
               SALVA
             </button>
-            <button onClick={() => router.push(`/serata/${params.id}`)} className="flex-1 bg-gray-700 hover:bg-gray-600 py-4 rounded-xl font-bold text-xl">
+            <button onClick={() => router.push(`/serata/${id}`)} className="flex-1 bg-gray-700 hover:bg-gray-600 py-4 rounded-xl font-bold text-xl">
               ANNULLA
             </button>
           </div>
