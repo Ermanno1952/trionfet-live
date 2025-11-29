@@ -139,7 +139,29 @@ export default function SerataPage({ params }: { params: Promise<{ id: string }>
     <div className="min-h-screen bg-gradient-to-br from-green-900 to-black text-white p-4 pb-20 flex flex-col">
       <div className="w-full max-w-lg mx-auto space-y-4">
 
-        <h1 className="text-5xl font-bold text-center text-yellow-400">TRIONFET</h1>
+                {/* TITOLO + PULSANTI IN ALTO */}
+        <div className="relative mb-6">
+          <h1 className="text-5xl font-bold text-center text-yellow-400">TRIONFET</h1>
+
+          <div className="absolute top-0 right-0 flex gap-3">
+            {/* RUOTA DENTATA – MODIFICA NOMI */}
+            <button
+              onClick={() => window.location.href = `/modifica/${id}`}
+              className="bg-white/20 hover:bg-white/40 p-4 rounded-full backdrop-blur-md transition-all shadow-lg"
+              title="Modifica capi e giocatori"
+            >
+              Ruota Dentata
+            </button>
+
+            {/* PULSANTE CLASSIFICA */}
+            <button
+              onClick={() => window.location.href = '/classifica'}
+              className="bg-gradient-to-r from-yellow-500 to-orange-500 text-black px-800 px-6 py-3 rounded-full font-bold text-lg shadow-xl hover:scale-105 transition-all"
+            >
+              CLASSIFICA
+            </button>
+          </div>
+        </div>
         <p className="text-center text-lg opacity-90">Batifondo {num}</p>
 
         <div className="text-center text-2xl font-bold text-yellow-300 leading-tight">
