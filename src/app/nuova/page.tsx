@@ -15,7 +15,7 @@ export default function NuovaSerata() {
   const [giocatoriB, setGiocatoriB] = useState('');
   const [link, setLink] = useState('');
 
-  const crea = async () => {
+    const crea = async () => {
     if (!capoA || !capoB || !giocatoriA || !giocatoriB) {
       alert('Compila tutti i campi!');
       return;
@@ -26,32 +26,33 @@ export default function NuovaSerata() {
       .insert({
         squadra_a: {
           capo: capoA,
-          giocatori: giocatoriA.split(',').map(s => s.trim()).filter(s => s)
+          giocatori: giocatoriA.split(',').map(s => s.trim()).filter(Boolean)
         },
         squadra_b: {
           capo: capoB,
-          giocatori: giocatoriB.split(',').map(s => s.trim()).filter(s => s)
+          giocatori: giocatoriB.split(',').map(s => s.trim()).filter(Boolean)
         },
       })
       .select()
       .single();
 
-    const result = await data;
-
-    if (error || !result) {
+    if (error || !data) {
       alert('Errore nella creazione. Riprova.');
       return;
     }
 
-    const url = `${window.location.origin}/serata/${result.id}`;
+    const url = `${window.location.origin}/serata/${data.id}`;
     setLink(url);
 
+    // FORZA IL RENDER + SCROLL IMMEDIATO
     setTimeout(() => {
-      window.scrollTo({
-        top: document.body.scrollHeight,
-        behavior: 'smooth'
-      });
-    }, 150);
+      const linkElement = document.getElementById('link-container');
+      if (linkElement) {
+        linkElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else {
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      }
+    }, 100);
   };
 
   return (
@@ -108,16 +109,19 @@ export default function NuovaSerata() {
             CREA SERATA
           </button>
 
-          {link && (
-            <div className="mt-8 p-6 bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl text-center animate-pulse">
-              <p className="font-bold text-lg mb-3">CONDIVIDI SU WHATSAPP:</p>
-              <p className="text-sm break-all font-mono bg-black/40 p-3 rounded mb-4">{link}</p>
+                    {link && (
+            <div id="link-container" className="mt-12 p-8 bg-gradient-to-r from-green-600 to-emerald-600 rounded-2xl text-center shadow-2xl animate-in fade-in slide-in-from-bottom duration-500">
+              <p className="font-bold text-2xl mb-4 text-yellow-300">SERATA CREATA!</p>
+              <p className="text-lg mb-4 opacity-90">Condividi questo link:</p>
+              <p className="text-sm break-all font-mono bg-black/50 p-4 rounded-lg mb-6 text-green-200">
+                {link}
+              </p>
               <button
                 onClick={() => {
                   navigator.clipboard.writeText(link);
-                  alert('Link copiato!');
+                  alert('Link copiato negli appunti!');
                 }}
-                className="bg-white text-green-700 px-6 py-3 rounded-lg font-bold text-lg"
+                className="bg-white text-green-700 px-8 py-4 rounded-full font-bold text-xl shadow-lg hover:scale-110 transition-all"
               >
                 COPIA LINK
               </button>
