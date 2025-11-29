@@ -115,7 +115,26 @@ export default function SerataPage({ params }: { params: Promise<{ id: string }>
       .update({ vinte_a: nuoveVinteA, vinte_b: nuoveVinteB })
       .eq('id', batifondo.id);
   };
-
+  const trashTalkVincitore = () => {
+    const frasi = [
+      "Alla lunga i più forti vengono fuori… e stasera erano chiaramente dall’altra parte del tavolo!",
+      "I migliori sono quelli che vincono anche senza fortuna… e voi ne avevate proprio zero!",
+      "Chi ride ultimo ride meglio… e stasera ridiamo noi fino a domani!",
+      "La classe non è acqua… e voi stasera eravate in modalità deserto del Sahara!",
+      "Si dice che la vendetta è un piatto che va servito freddo… ma voi avete servito solo patatine fredde!",
+      "Avete giocato bene… peccato che noi abbiamo giocato meglio!",
+      "La ruota gira… ma stasera era inchiodata dalla nostra parte!",
+      "Avete fatto del vostro meglio… che purtroppo non era abbastanza!",
+      "Chi semina vento raccoglie tempesta… e voi avete raccolto solo figurine!",
+      "Il Trionfet è come il vino: più invecchia, più diventa forte… soprattutto se sei tu a perdere!",
+      "Avete tenuto duro fino alla fine… ma alla fine avete mollato come sempre!",
+      "Complimenti per il secondo posto… il primo è già occupato!",
+      "Avete perso con stile… ma avete perso lo stesso!",
+      "La prossima volta portate anche la fortuna… perché il talento da solo non basta!",
+      "Siete stati grandi… nel perdere!",
+    ];
+    return frasi[Math.floor(Math.random() * frasi.length)];
+  };
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-900 to-black text-white p-4 pb-20 flex flex-col">
       <div className="w-full max-w-lg mx-auto space-y-4">
@@ -203,20 +222,37 @@ export default function SerataPage({ params }: { params: Promise<{ id: string }>
         )}
 
         {serataFinita && (
-          <div className="mt-8 p-8 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-3xl text-center">
-            <h2 className="text-5xl font-bold mb-4">SERATA FINITA!</h2>
+          <div className="mt-8 p-8 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-3xl text-center animate-bounce">
+            <h2 className="text-5xl font-bold mb-6">SERATA FINITA!</h2>
+
             {totaleA > totaleB ? (
-              <p className="text-3xl font-bold text-green-300">
-                {capoA} CAMPIONE! {totaleA}-{totaleB}
-              </p>
+              <>
+                <p className="text-4xl font-bold text-green-300 mb-4">
+                  {capoA} E LA SUA CIURMA SONO I CAMPIONI! {totaleA}-{totaleB}
+                </p>
+                <p className="text-2xl italic opacity-90 mt-6">
+                  {trashTalkVincitore()}
+                </p>
+                <p className="text-xl mt-4 font-bold text-red-300">
+                  {capoB} stasera ha scoperto che la fortuna aiuta gli audaci… ma non i brocchi!
+                </p>
+              </>
             ) : totaleB > totaleA ? (
-              <p className="text-3xl font-bold text-red-300">
-                {capoB} DOMINA! {totaleB}-{totaleA}
-              </p>
+              <>
+                <p className="text-4xl font-bold text-red-300 mb-4">
+                  {capoB} E LA SUA CIURMA DOMINANO! {totaleB}-{totaleA}
+                </p>
+                <p className="text-2xl italic opacity-90 mt-6">
+                  {trashTalkVincitore()}
+                </p>
+                <p className="text-xl mt-4 font-bold text-green-300">
+                  {capoA} ha imparato che anche con le carte migliori… si può perdere lo stesso!
+                </p>
+              </>
             ) : (
-              <p className="text-3xl font-bold">PAREGGIO EPICO!</p>
+              <p className="text-4xl font-bold">PAREGGIO EPICO! Nessuno ha vinto… ma nessuno ha perso davvero!</p>
             )}
-            <p className="text-xl mt-6">Alla prossima!</p>
+            <p className="text-xl mt-8">Alla prossima batosta!</p>
           </div>
         )}
       </div>
