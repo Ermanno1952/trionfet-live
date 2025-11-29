@@ -43,9 +43,14 @@ export default function NuovaSerata() {
 
     const id = data.id; // Usa l’intero UUID
     const url = `${window.location.origin}/serata/${id}`;
-    setLink(url);
+        setLink(url);
+
+    // SCROLL AUTOMATICO AL LINK (addio pagina bianca!)
     setTimeout(() => {
-      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: 'smooth'
+      });
     }, 100);
   };
 
