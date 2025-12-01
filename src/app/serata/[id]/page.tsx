@@ -202,8 +202,8 @@ export default function SerataPage({ params }: { params: Promise<{ id: string }>
         )}
 
         {serataFinita && (
-          <div className="p-10 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-3xl text-center animate-bounce">
-            <h2 className="text-6xl font-bold mb-6">SERATA FINITA!</h2>
+  <div className="p-10 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-3xl text-center shadow-2xl animate-in fade-in zoom-in duration-700">
+    <h2 className="text-6xl font-bold mb-6">SERATA FINITA!</h2>
             {totaleA > totaleB ? (
               <>
                 <p className="text-4xl font-bold text-green-300 mb-4">{capoA} CAMPIONE! {totaleA}-{totaleB}</p>
