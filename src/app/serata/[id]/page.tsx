@@ -222,16 +222,24 @@ export default function SerataPage({ params }: { params: Promise<{ id: string }>
         )}
       </div>
 
-{/* PULSANTI IN BASSO – ICONA PENNA VERA + STORICO COMPATTO */}
-      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 flex gap-8 items-center z-50">
-        {/* ICONA PENNA */}
+        {/* ICONA PENNA – ORA È UNA PENNA VERA, GRANDE E CHIARA */}
         <button
           onClick={() => window.location.href = `/modifica/${id}`}
-          className="bg-white/20 hover:bg-white/30 backdrop-blur-md p-5 rounded-full shadow-2xl transition-all hover:scale-110"
-          title="Modifica nomi"
+          className="bg-white/20 hover:bg-white/30 backdrop-blur-md p-6 rounded-full shadow-2xl transition-all hover:scale-110"
+          title="Modifica nomi squadra"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11l14 14a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11 21H9v-2L19.586 8.414a2 2 0 010-2.828z" />
+          <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            className="h-10 w-10 text-white" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="currentColor" 
+            strokeWidth="2.5" 
+            strokeLinecap="round" 
+            strokeLinejoin="round"
+          >
+            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+            <path d="m15 5 4 4"></path>
           </svg>
         </button>
 
