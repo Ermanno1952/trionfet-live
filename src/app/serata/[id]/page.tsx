@@ -142,14 +142,20 @@ export default function SerataPage({ params }: { params: Promise<{ id: string }>
           <div className="bg-green-800/50 rounded-2xl p-6 border-4 border-green-500 text-center">
             <h2 className="text-2xl font-bold text-green-300 truncate">{capoA || '...'}</h2>
             <p className="text-8xl font-bold my-4">{vinteA}</p>
-            <div className="flex justify-center gap-4">
-              <button onClick={() => addPunto('a')} disabled={!!batifondo?.vincitore}
-                className={`px-10 py-5 rounded-full text-3xl font-bold ${batifondo?.vincitore ? 'bg-gray-600' : 'bg-gradient-to-r from-green-500 to-emerald-600 shadow-xl hover:scale-110'}`}>
-                +1
+            <div className="flex justify-center gap-6 mt-4">
+              <button 
+                onClick={() => addPunto('a')} 
+                disabled={!!batifondo?.vincitore}
+                className={`w-24 h-24 rounded-full text-5xl font-bold shadow-2xl transition-all ${batifondo?.vincitore ? 'bg-gray-600' : 'bg-gradient-to-br from-green-500 to-emerald-600 hover:scale-110 active:scale-95'}`}
+              >
+                +
               </button>
-              <button onClick={() => removePunto('a')} disabled={vinteA === 0 || !!batifondo?.vincitore}
-                className="px-10 py-5 rounded-full text-3xl font-bold bg-gray-700 hover:bg-gray-600 disabled:opacity-30">
-                −1
+              <button 
+                onClick={() => removePunto('a')} 
+                disabled={vinteA === 0 || !!batifondo?.vincitore}
+                className="w-24 h-24 rounded-full text-5xl font-bold bg-gray-700 hover:bg-gray-600 disabled:opacity-30 shadow-2xl active:scale-95"
+              >
+                −
               </button>
             </div>
           </div>
@@ -157,14 +163,20 @@ export default function SerataPage({ params }: { params: Promise<{ id: string }>
           <div className="bg-red-800/50 rounded-2xl p-6 border-4 border-red-500 text-center">
             <h2 className="text-2xl font-bold text-red-300 truncate">{capoB || '...'}</h2>
             <p className="text-8xl font-bold my-4">{vinteB}</p>
-            <div className="flex justify-center gap-4">
-              <button onClick={() => addPunto('b')} disabled={!!batifondo?.vincitore}
-                className={`px-10 py-5 rounded-full text-3xl font-bold ${batifondo?.vincitore ? 'bg-gray-600' : 'bg-gradient-to-r from-red-500 to-rose-600 shadow-xl hover:scale-110'}`}>
-                +1
+            <div className="flex justify-center gap-6 mt-4">
+              <button 
+                onClick={() => addPunto('b')} 
+                disabled={!!batifondo?.vincitore}
+                className={`w-24 h-24 rounded-full text-5xl font-bold shadow-2xl transition-all ${batifondo?.vincitore ? 'bg-gray-600' : 'bg-gradient-to-br from-red-500 to-rose-600 hover:scale-110 active:scale-95'}`}
+              >
+                +
               </button>
-              <button onClick={() => removePunto('b')} disabled={vinteB === 0 || !!batifondo?.vincitore}
-                className="px-10 py-5 rounded-full text-3xl font-bold bg-gray-700 hover:bg-gray-600 disabled:opacity-30">
-                −1
+              <button 
+                onClick={() => removePunto('b')} 
+                disabled={vinteB === 0 || !!batifondo?.vincitore}
+                className="w-24 h-24 rounded-full text-5xl font-bold bg-gray-700 hover:bg-gray-600 disabled:opacity-30 shadow-2xl active:scale-95"
+              >
+                −
               </button>
             </div>
           </div>
@@ -208,22 +220,24 @@ export default function SerataPage({ params }: { params: Promise<{ id: string }>
         )}
       </div>
 
-      {/* PULSANTI FISSI IN BASSO */}
-      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 flex gap-10 z-50">
+     {/* PULSANTI FISSI IN BASSO – ICONA PENNA + TESTO STORICO */}
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 flex gap-8 z-50">
+        {/* ICONA PENNA – MODIFICA */}
         <button
           onClick={() => window.location.href = `/modifica/${id}`}
-          className="bg-white/20 hover:bg-white/30 backdrop-blur-md p-6 rounded-full shadow-2xl transition-all hover:scale-110"
+          className="bg-white/20 hover:bg-white/30 backdrop-blur-md p-5 rounded-full shadow-2xl transition-all hover:scale-110"
           title="Modifica nomi"
         >
           Penna
         </button>
 
+        {/* STORICO PARTITE */}
         <button
           onClick={() => window.location.href = '/classifica'}
-          className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-black p-6 rounded-full shadow-2xl transition-all hover:scale-110 flex items-center justify-center"
-          title="Classifica storica"
+          className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-black px-8 py-4 rounded-full font-bold text-lg shadow-2xl transition-all hover:scale-105"
+          title="Storico partite"
         >
-          Trofeo
+          STORICO PARTITE
         </button>
       </div>
     </div>
