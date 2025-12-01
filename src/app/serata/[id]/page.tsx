@@ -81,7 +81,7 @@ export default function SerataPage({ params }: { params: Promise<{ id: string }>
 
     let vincitore: 'A' | 'B' | null = null;
     if (nuoveVinteA >= 7) vincitore = 'A';
-    if (nuoveVinteB >=  >= 7) vincitore = 'B';
+    if (nuoveVinteB >= 7) vincitore = 'B';
 
     if (vincitore) {
       await supabase
