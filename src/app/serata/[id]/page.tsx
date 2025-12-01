@@ -243,7 +243,7 @@ export default function SerataPage({ params }: { params: Promise<{ id: string }>
           </svg>
         </button>
 
-        {/* STORICO PARTITE – COMPATTO */}
+{/* STORICO PARTITE */}
         <button
           onClick={() => window.location.href = '/classifica'}
           className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-black px-6 py-4 rounded-full font-bold text-lg shadow-2xl transition-all hover:scale-105"
@@ -251,6 +251,7 @@ export default function SerataPage({ params }: { params: Promise<{ id: string }>
           STORICO
         </button>
       </div>
+
     </div>
   );
 }
