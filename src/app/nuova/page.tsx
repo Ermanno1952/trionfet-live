@@ -67,17 +67,17 @@ export default function NuovaSerata() {
             <input
               value={capoA}
               onChange={e => setCapoA(e.target.value)}
-              placeholder="Mario"
+              placeholder=" "
               className="w-full p-3 rounded bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500"
             />
           </div>
 
           <div className="bg-white/5 rounded-lg p-4">
-            <label className="block text-sm font-bold text-green-300 mb-1">GIOCATORI A (separati da virgola)</label>
+            <label className="block text-sm font-bold text-green-300 mb-1">GIOCATORI A (separati da spazio)</label>
             <input
               value={giocatoriA}
   onChange={e => setGiocatoriA(e.target.value)}
-  placeholder="Mario Bepino Tullio (spazio invece di virgola)"
+  placeholder=""
   className="w-full p-3 rounded bg-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
   // MAGIA CELLULARE: tastiera con punto e spazio grandi
   inputMode="text"
@@ -90,17 +90,17 @@ export default function NuovaSerata() {
             <input
               value={capoB}
               onChange={e => setCapoB(e.target.value)}
-              placeholder="Fabio"
+              placeholder=""
               className="w-full p-3 rounded bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500"
             />
           </div>
 
           <div className="bg-white/5 rounded-lg p-4">
-            <label className="block text-sm font-bold text-red-300 mb-1">GIOCATORI B (separati da virgola)</label>
+            <label className="block text-sm font-bold text-red-300 mb-1">GIOCATORI B (separati da spazio)</label>
             <input
               value={giocatoriB}
   onChange={e => setGiocatoriB(e.target.value)}
-  placeholder="Fabio Piero Roberto (solo spazi)"
+  placeholder=""
   className="w-full p-3 rounded bg-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
   inputMode="text"
   autoComplete="off"
