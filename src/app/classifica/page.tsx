@@ -62,7 +62,18 @@ export default function Classifica() {
               <div
                 key={s.id}
                 className="bg-white/10 rounded-2xl p-6 backdrop-blur-sm border border-white/20"
-              >
+              >{/* DATA E ORA – METTI QUI */}
+    <div className="text-center text-yellow-300 font-bold text-lg mb-4 opacity-90">
+      {new Date(s.created_at).toLocaleDateString('it-IT', {
+        weekday: 'short',
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+      })} – {new Date(s.created_at).toLocaleTimeString('it-IT', {
+        hour: '2-digit',
+        minute: '2-digit'
+      })}
+    </div>
                 <div className="flex justify-between items-center mb-4">
                   <div className="text-green-300">
                     <p className="font-bold text-xl">{s.squadra_a.capo}</p>
