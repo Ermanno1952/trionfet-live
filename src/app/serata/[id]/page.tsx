@@ -190,13 +190,15 @@ export default function SerataPage({ params }: { params: Promise<{ id: string }>
           </div>
         )}
 
-        {(totaleA > 0 || totaleB > 0) && !serataFinita && (
-          <button
-            onClick={() => setSerataFinita(true)}
-            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 py-6 rounded-2xl text-3xl font-bold shadow-2xl hover:scale-105"
-          >
-            FINISCI SERATA – DICHIARA IL VINCITORE!
-          </button>
+    {(totaleA > 0 || totaleB > 0) && !serataFinita && (
+          <div className="mt-12 px-8">
+            <button
+              onClick={() => setSerataFinita(true)}
+              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white py-8 rounded-3xl text-4xl font-bold shadow-2xl hover:scale-105 transition-all active:scale-95"
+            >
+              FINISCI SERATA – DICHIARA IL VINCITORE!
+            </button>
+          </div>
         )}
 
         {serataFinita && (
@@ -220,24 +222,25 @@ export default function SerataPage({ params }: { params: Promise<{ id: string }>
         )}
       </div>
 
-     {/* PULSANTI FISSI IN BASSO – ICONA PENNA + TESTO STORICO */}
-      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 flex gap-8 z-50">
-        {/* ICONA PENNA – MODIFICA */}
+{/* PULSANTI IN BASSO – ICONA PENNA VERA + STORICO COMPATTO */}
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 flex gap-8 items-center z-50">
+        {/* ICONA PENNA */}
         <button
           onClick={() => window.location.href = `/modifica/${id}`}
           className="bg-white/20 hover:bg-white/30 backdrop-blur-md p-5 rounded-full shadow-2xl transition-all hover:scale-110"
           title="Modifica nomi"
         >
-          Penna
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11l14 14a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11 21H9v-2L19.586 8.414a2 2 0 010-2.828z" />
+          </svg>
         </button>
 
-        {/* STORICO PARTITE */}
+        {/* STORICO PARTITE – COMPATTO */}
         <button
           onClick={() => window.location.href = '/classifica'}
-          className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-black px-8 py-4 rounded-full font-bold text-lg shadow-2xl transition-all hover:scale-105"
-          title="Storico partite"
+          className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-black px-6 py-4 rounded-full font-bold text-lg shadow-2xl transition-all hover:scale-105"
         >
-          STORICO PARTITE
+          STORICO
         </button>
       </div>
     </div>
