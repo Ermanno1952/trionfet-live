@@ -127,7 +127,7 @@ export default function SerataPage({ params }: { params: Promise<{ id: string }>
     <div className="min-h-screen bg-gradient-to-br from-green-900 to-black text-white p-4 pb-32 flex flex-col items-center relative">
       <div className="w-full max-w-lg mx-auto space-y-6">
 
-        {/* TITOLO CENTRALE */}
+        {/* TITOLO */}
         <div className="text-center pt-6">
           <h1 className="text-6xl md:text-7xl font-bold text-yellow-400 drop-shadow-2xl">TRIONFET</h1>
           <p className="text-xl mt-2 opacity-90">Batifondo {num}</p>
@@ -143,18 +143,12 @@ export default function SerataPage({ params }: { params: Promise<{ id: string }>
             <h2 className="text-2xl font-bold text-green-300 truncate">{capoA || '...'}</h2>
             <p className="text-8xl font-bold my-4">{vinteA}</p>
             <div className="flex justify-center gap-6 mt-4">
-              <button 
-                onClick={() => addPunto('a')} 
-                disabled={!!batifondo?.vincitore}
-                className={`w-24 h-24 rounded-full text-5xl font-bold shadow-2xl transition-all ${batifondo?.vincitore ? 'bg-gray-600' : 'bg-gradient-to-br from-green-500 to-emerald-600 hover:scale-110 active:scale-95'}`}
-              >
+              <button onClick={() => addPunto('a')} disabled={!!batifondo?.vincitore}
+                className={`w-24 h-24 rounded-full text-5xl font-bold shadow-2xl transition-all ${batifondo?.vincitore ? 'bg-gray-600' : 'bg-gradient-to-br from-green-500 to-emerald-600 hover:scale-110 active:scale-95'}`}>
                 +
               </button>
-              <button 
-                onClick={() => removePunto('a')} 
-                disabled={vinteA === 0 || !!batifondo?.vincitore}
-                className="w-24 h-24 rounded-full text-5xl font-bold bg-gray-700 hover:bg-gray-600 disabled:opacity-30 shadow-2xl active:scale-95"
-              >
+              <button onClick={() => removePunto('a')} disabled={vinteA === 0 || !!batifondo?.vincitore}
+                className="w-24 h-24 rounded-full text-5xl font-bold bg-gray-700 hover:bg-gray-600 disabled:opacity-30 shadow-2xl active:scale-95">
                 −
               </button>
             </div>
@@ -164,18 +158,12 @@ export default function SerataPage({ params }: { params: Promise<{ id: string }>
             <h2 className="text-2xl font-bold text-red-300 truncate">{capoB || '...'}</h2>
             <p className="text-8xl font-bold my-4">{vinteB}</p>
             <div className="flex justify-center gap-6 mt-4">
-              <button 
-                onClick={() => addPunto('b')} 
-                disabled={!!batifondo?.vincitore}
-                className={`w-24 h-24 rounded-full text-5xl font-bold shadow-2xl transition-all ${batifondo?.vincitore ? 'bg-gray-600' : 'bg-gradient-to-br from-red-500 to-rose-600 hover:scale-110 active:scale-95'}`}
-              >
+              <button onClick={() => addPunto('b')} disabled={!!batifondo?.vincitore}
+                className={`w-24 h-24 rounded-full text-5xl font-bold shadow-2xl transition-all ${batifondo?.vincitore ? 'bg-gray-600' : 'bg-gradient-to-br from-red-500 to-rose-600 hover:scale-110 active:scale-95'}`}>
                 +
               </button>
-              <button 
-                onClick={() => removePunto('b')} 
-                disabled={vinteB === 0 || !!batifondo?.vincitore}
-                className="w-24 h-24 rounded-full text-5xl font-bold bg-gray-700 hover:bg-gray-600 disabled:opacity-30 shadow-2xl active:scale-95"
-              >
+              <button onClick={() => removePunto('b')} disabled={vinteB === 0 || !!batifondo?.vincitore}
+                className="w-24 h-24 rounded-full text-5xl font-bold bg-gray-700 hover:bg-gray-600 disabled:opacity-30 shadow-2xl active:scale-95">
                 −
               </button>
             </div>
@@ -183,14 +171,14 @@ export default function SerataPage({ params }: { params: Promise<{ id: string }>
         </div>
 
         {batifondo?.vincitore && (
-          <div className="p-6 bg-gradient-to-r from-yellow-600 to-orange-600 rounded-2xl text-center animate-pulse">
+          <div className="p-6 bg-gradient-to-r from-yellow-600 to-orange-600 rounded-2xl text-center shadow-2xl">
             <p className="text-3xl font-bold">
               BATIFONDO {num} VINTO DA <span className="text-4xl">{batifondo.vincitore === 'A' ? capoA : capoB}!</span>
             </p>
           </div>
         )}
 
-    {(totaleA > 0 || totaleB > 0) && !serataFinita && (
+        {(totaleA > 0 || totaleB > 0) && !serataFinita && (
           <div className="mt-12 px-8">
             <button
               onClick={() => setSerataFinita(true)}
@@ -202,8 +190,8 @@ export default function SerataPage({ params }: { params: Promise<{ id: string }>
         )}
 
         {serataFinita && (
-  <div className="p-10 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-3xl text-center shadow-2xl animate-in fade-in zoom-in duration-700">
-    <h2 className="text-6xl font-bold mb-6">SERATA FINITA!</h2>
+          <div className="p-10 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-3xl text-center shadow-2xl animate-in fade-in zoom-in duration-700">
+            <h2 className="text-6xl font-bold mb-6">SERATA FINITA!</h2>
             {totaleA > totaleB ? (
               <>
                 <p className="text-4xl font-bold text-green-300 mb-4">{capoA} CAMPIONE! {totaleA}-{totaleB}</p>
@@ -222,28 +210,21 @@ export default function SerataPage({ params }: { params: Promise<{ id: string }>
         )}
       </div>
 
-        {/* ICONA PENNA – ORA È UNA PENNA VERA, GRANDE E CHIARA */}
+      {/* PULSANTI IN BASSO */}
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 flex gap-8 items-center z-50">
+        {/* PENNA VERA */}
         <button
           onClick={() => window.location.href = `/modifica/${id}`}
           className="bg-white/20 hover:bg-white/30 backdrop-blur-md p-6 rounded-full shadow-2xl transition-all hover:scale-110"
           title="Modifica nomi squadra"
         >
-          <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            className="h-10 w-10 text-white" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2.5" 
-            strokeLinecap="round" 
-            strokeLinejoin="round"
-          >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
             <path d="m15 5 4 4"></path>
           </svg>
         </button>
 
-{/* STORICO PARTITE */}
+        {/* STORICO */}
         <button
           onClick={() => window.location.href = '/classifica'}
           className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-black px-6 py-4 rounded-full font-bold text-lg shadow-2xl transition-all hover:scale-105"
@@ -251,7 +232,6 @@ export default function SerataPage({ params }: { params: Promise<{ id: string }>
           STORICO
         </button>
       </div>
-
     </div>
   );
 }
